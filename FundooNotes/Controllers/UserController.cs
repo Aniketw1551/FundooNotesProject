@@ -44,7 +44,7 @@ namespace FundooNotes.Controllers
             {
                 var user = userBL.Login(userLogin.Email, userLogin.Password);
                 if (user != null)
-                    return this.Ok(new { Success = true, message = "Suucessfully logged in", UserName = user.FirstName });
+                    return this.Ok(new { Success = true, message = "Suucessfully logged in", data = user });
                 else
                     return this.BadRequest(new { Success = false, message = "Please enter valid email and password" });
             }

@@ -30,7 +30,7 @@ namespace BusinessLayer.Services
             }
         }
         // Method to return login object
-        public User Login(string Email, string Password)
+        public string Login(string Email, string Password)
         {
             try
             {

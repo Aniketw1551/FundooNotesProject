@@ -6,12 +6,14 @@ using System.Text;
 
 namespace RepositoryLayer.Context
 {
+    //DbContext is used to communicate with Database
     public class FundooContext : DbContext
     {
         public FundooContext(DbContextOptions options)
            : base(options)
         {
         }
+        //DbSet is used to view Database and interact with Table/s in Database
         public DbSet<User> UserTable { get; set; }
     }
 }
