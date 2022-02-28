@@ -8,7 +8,7 @@ using System.Text;
 
 namespace BusinessLayer.Services
 {
-   public class UserBL : IUserBL
+    public class UserBL : IUserBL
     {
         private readonly IUserRL userRL;
         //Constructor of UserBL
@@ -35,6 +35,18 @@ namespace BusinessLayer.Services
             try
             {
                 return userRL.Login(Email, Password);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        //Method to return Forgot password object
+        public string ForgotPassword(string email)
+        {
+            try
+            {
+                return userRL.ForgotPassword(email);
             }
             catch (Exception)
             {

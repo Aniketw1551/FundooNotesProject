@@ -23,8 +23,8 @@ namespace RepositoryLayer.Services
             this.fundooContext = fundooContext;
             this._Appsettings = _Appsettings;
         }
-            //Constructor of UserRL
-            public UserRL(FundooContext fundooContext)
+        //Constructor of UserRL
+        public UserRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
@@ -90,6 +90,29 @@ namespace RepositoryLayer.Services
               expires: DateTime.Now.AddMinutes(60),
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        //Method for Forgot password token generation
+        public string ForgotPassword(string email)
+        {
+            try
+            {
+                //checking Email exists or not
+                var existingEmail = this.fundooContext.UserTable.Where(x => x.Email == email).FirstOrDefault();
+                if (existingEmail != null)
+                {
+                    //Generating Token 
+                    var token = GenerateSecurityToken(existingEmail.Email, existingEmail.Id);
+                    //passing Token to MsmqModel
+                    new MsmqModel().Sender(token);
+                    return token;
+                }
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
