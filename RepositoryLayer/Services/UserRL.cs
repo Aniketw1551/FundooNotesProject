@@ -114,5 +114,28 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
+        //Method for Reset password using token 
+        public bool ResetPassword(string email, string newPassword, string confirmPassword)
+        {
+            try
+            {
+                // Checking if new password matches with confirm password
+                if (newPassword == confirmPassword)
+                {
+                    //matching in database
+                    var userP = fundooContext.UserTable.Where(x => x.Email == email).FirstOrDefault();
+                    userP.Password = confirmPassword;
+                    //changing the old password to new password
+                    fundooContext.SaveChanges();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
