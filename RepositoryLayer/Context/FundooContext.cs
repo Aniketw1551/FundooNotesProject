@@ -15,5 +15,6 @@ namespace RepositoryLayer.Context
         }
         //DbSet is used to view Database and interact with Table/s in Database
         public DbSet<User> UserTable { get; set; }
+        public DbSet<Notes> NotesTable { get; set; }
     }
 }
