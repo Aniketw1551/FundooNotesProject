@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Interface;
 using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
@@ -11,8 +12,7 @@ namespace BusinessLayer.Services
 {
     public class NotesBL : INotesBL
     {
-        private readonly INotesRL NotesRL;
-        private INotesRL notesRL;
+        private readonly INotesRL notesRL;
 
         //Constructor of UserBL
         public NotesBL(INotesRL notesRL)
@@ -65,7 +65,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public IEnumerable<Notes> ViewAllNotes()
+        public List<Notes> ViewAllNotes()
         {
             try
             {
@@ -73,6 +73,62 @@ namespace BusinessLayer.Services
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+        public Notes NoteArchive(long userId, long NotesId)
+        {
+            try
+            {
+                return notesRL.NoteArchive(userId, NotesId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public Notes NotePin(long userId, long NotesId)
+        {
+            try
+            {
+                return notesRL.NotePin(userId, NotesId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public Notes NoteTrash(long userId, long NotesId)
+        {
+            try
+            {
+                return notesRL.NoteTrash(userId, NotesId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public Notes NoteColor(long NotesId, long userId, string Color)
+        {
+            try
+            {
+                return notesRL.NoteColor(NotesId, userId, Color);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public Notes ImageUpload(long userId, long NotesId, IFormFile image)
+        {
+            try
+            {
+                return notesRL.ImageUpload(userId, NotesId, image);
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

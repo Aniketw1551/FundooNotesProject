@@ -9,7 +9,7 @@ namespace CommonLayer.Model
 {
     public class MsmqModel
     {
-        //Obj of MessageQueue class
+        //Object of MessageQueue class
         MessageQueue messageQueue = new MessageQueue();
         //Method to Send token on Mail
         public void Sender(string token)
