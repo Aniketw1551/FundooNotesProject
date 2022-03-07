@@ -10,7 +10,7 @@ namespace BusinessLayer.Interface
     public interface INotesBL
     {
         public Notes NoteCreation(long userId, NotesCreation notesCreation);
-        public Notes NoteUpdate(long NotesId, long userId, NotesUpdate notesUpdate);
+        public Notes NoteUpdate(long NotesId, NotesUpdate notesUpdate);
         public bool DeleteNote(long NotesId);
         public IEnumerable<Notes> ViewNotesByUserId(long userId);
         public List<Notes> ViewAllNotes();

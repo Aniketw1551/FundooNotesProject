@@ -12,7 +12,7 @@ namespace BusinessLayer.Services
         //instance varable
         private readonly ICollabRL collabRL;
 
-        //Constructor of UserBL
+        //Constructor of CollabBL
         public CollabBL(ICollabRL collabRL)
         {
             this.collabRL = collabRL;

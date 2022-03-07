@@ -15,6 +15,7 @@ namespace RepositoryLayer.Services
 {
     public class UserRL : IUserRL
     {
+
         private readonly FundooContext fundooContext;
         private readonly IConfiguration _Appsettings;
         //Constructor
@@ -37,7 +38,7 @@ namespace RepositoryLayer.Services
                 newUser.FirstName = userReg.FirstName;
                 newUser.LastName = userReg.LastName;
                 newUser.Email = userReg.Email;
-                newUser.Password = userReg.Password;
+                newUser.Password = Cipher.Encrypt(userReg.Password);
                 fundooContext.UserTable.Add(newUser);
                 int result = fundooContext.SaveChanges();
                 if (result > 0)
@@ -58,9 +59,10 @@ namespace RepositoryLayer.Services
                 if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
                     return null;
                 //LINQ Query to match the input in database
-                var result = this.fundooContext.UserTable.Where(x => x.Email == Email && x.Password == Password).FirstOrDefault();
-                var id = result.Id;
-                if (result != null)
+                var result = this.fundooContext.UserTable.FirstOrDefault(x => x.Email == Email);
+                string decrypt = Cipher.Decrypt(result.Password);
+                 var id = result.Id;
+                if (result != null && decrypt == Password)
                     //Calling Jwt Token method 
                     return GenerateSecurityToken(result.Email, id);
                 else

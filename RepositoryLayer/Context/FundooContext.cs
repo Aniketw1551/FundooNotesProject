@@ -11,11 +11,12 @@ namespace RepositoryLayer.Context
     {
         public FundooContext(DbContextOptions options)
            : base(options)
-        {
+        { 
         }
         //DbSet is used to view Database and interact with Table/s in Database
         public DbSet<User> UserTable { get; set; }
         public DbSet<Notes> NotesTable { get; set; }
         public DbSet<Collaborator> CollabTable { get; set; }
+        public DbSet<Labels> LabelTable { get; set; }
     }
 }

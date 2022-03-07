@@ -31,11 +31,11 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public Notes NoteUpdate(long NotesId, long userId, NotesUpdate notesUpdate)
+        public Notes NoteUpdate(long NotesId, NotesUpdate notesUpdate)
         {
             try
             {
-                return notesRL.NoteUpdate(NotesId, userId, notesUpdate);
+                return notesRL.NoteUpdate(NotesId, notesUpdate);
             }
             catch (Exception)
             {
