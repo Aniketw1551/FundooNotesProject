@@ -59,7 +59,7 @@ namespace RepositoryLayer.Services
                 if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
                     return null;
                 //LINQ Query to match the input in database
-                var result = this.fundooContext.UserTable.FirstOrDefault(x => x.Email == Email);
+                var result = fundooContext.UserTable.FirstOrDefault(x => x.Email == Email);
                 string decrypt = Cipher.Decrypt(result.Password);
                  var id = result.Id;
                 if (result != null && decrypt == Password)

@@ -52,5 +52,17 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+        public List<Collaborator> ViewAllCollaborators()
+        {
+            try
+            {
+                return collabRL.ViewAllCollaborators();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

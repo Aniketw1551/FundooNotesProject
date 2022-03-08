@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Interface;
+using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,65 +17,83 @@ namespace FundooNotes.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CollabController : ControllerBase
+    public class LabelController : ControllerBase
     {
         //instance variables
         private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
-        private readonly ICollabBL collabBL;
-        //Constructor of CollabController
-        public CollabController(ICollabBL collabBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
+        private readonly ILabelBL labelBL;
+        //Constructor of LabelController
+        public LabelController(ILabelBL labelBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
-            this.collabBL = collabBL;
+            this.labelBL = labelBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        //Create collab api 
+        //Create Lable API
         [Authorize]
         [HttpPost("Create")]
-        public IActionResult CreateCollab(long notesId, string email)
+        public IActionResult CreateLabel(long notesId, string labelName)
         {
             try
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
-                var result = collabBL.CreateCollab(userId, notesId, email);
+                var result = labelBL.CreateLabel(userId, notesId, labelName);
                 if (result != null)
-                    return this.Ok(new { Success = true, message = "Collab created successfully", data = result });
+                    return this.Ok(new { Success = true, message = "Label created successfully", data = result });
                 else
-                    return this.BadRequest(new { Success = false, message = "Error while creating collad" });
+                    return this.BadRequest(new { Success = false, message = "Error while creating Label" });
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        //Remove collab api
+        //Update Label API
+        [Authorize]
+        [HttpPut("Update")]
+        public IActionResult UpdateLabel(string labelName, long notesId)
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+                var result = labelBL.UpdateLabel(labelName, notesId, userId);
+                if (result != null)
+                    return this.Ok(new { Success = true, message = "Label updated successfully", data = result });
+                else
+                    return this.BadRequest(new { Success = false, message = "Error while updating Label" });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }    
+        //Remove Label API
         [Authorize]
         [HttpDelete("Remove")]
-        public IActionResult RemoveCollab(long CollabId)
+        public IActionResult RemoveLabel(long labelId)
         {
             try
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
-                var result = collabBL.RemoveCollab(userId, CollabId);
-                if (result != null)
-                    return this.Ok(new { Success = true, message = "Collab removed successfully", data = result });
+                if (labelBL.Removelabel(userId, labelId))
+                    return this.Ok(new { Success = true, message = "Label removed successfully" });
                 else
-                    return this.BadRequest(new { Success = false, message = "Failed to remove collab. Please try again" });
+                    return this.BadRequest(new { Success = false, message = "Failed to remove Label. Please try again" });
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        //Get collabs by notes id api
+        //Get label by notes id api
         [Authorize]
-        [HttpGet("{Id}/Get")]
-        public IEnumerable<Collaborator> ViewCollabByNotesId(long NotesId)
+        [HttpGet("Get")]
+        public IEnumerable<Labels> ViewLabelsByNotesId(long NotesId)
         {
             try
             {
-                var result = collabBL.ViewCollabByNotesId(NotesId);
+                var result = labelBL.ViewLabelsByNotesId(NotesId);
                 if (result != null)
                     return result;
                 else
@@ -85,14 +104,33 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all Collabs api
+        //Get label by user id api
+        [Authorize]
+        [HttpGet("{Id}/Id")]
+        public IEnumerable<Labels> ViewLabelsByUserId()
+        {
+            try
+            {
+                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+                var result = labelBL.ViewLabelsByUserId(userId);
+                if (result != null)
+                    return result;
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        //Get all labels api
         [Authorize]
         [HttpGet("ViewAll")]
-        public List<Collaborator> ViewAllCollaborators()
+        public List<Labels> ViewAllLabels()
         {
             try
             {
-                var result = collabBL.ViewAllCollaborators();
+                var result = labelBL.ViewAllLabels();
                 if (result != null)
                     return result;
                 else
@@ -103,22 +141,22 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all collab by redis api
+        //Get all label using redis api
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
             var cacheKey = "customerList";
             string serializedCustomerList;
-            var customerList = new List<Collaborator>();
+            var customerList = new List<Labels>();
             var redisCustomerList = await distributedCache.GetAsync(cacheKey);
             if (redisCustomerList != null)
             {
                 serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
-                customerList = JsonConvert.DeserializeObject<List<Collaborator>>(serializedCustomerList);
+                customerList = JsonConvert.DeserializeObject<List<Labels>>(serializedCustomerList);
             }
             else
             {
-                customerList = (List<Collaborator>)collabBL.ViewAllCollaborators();
+                customerList = (List<Labels>)labelBL.ViewAllLabels();
                 serializedCustomerList = JsonConvert.SerializeObject(customerList);
                 redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
                 var options = new DistributedCacheEntryOptions()

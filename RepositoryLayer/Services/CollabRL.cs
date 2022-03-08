@@ -62,8 +62,27 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to Remove collab 
-        public Collaborator RemoveCollab(long userId, long CollabId)
+        //To View all collaborators in database
+        public List<Collaborator> ViewAllCollaborators()
+        {
+            try
+            {
+                //Getting all details of collaborators present in database
+                var collab = fundooContext.CollabTable.ToList();
+                if (collab != null)
+                {
+                    return collab;
+                }
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+            //Method to Remove collab 
+            public Collaborator RemoveCollab(long userId, long CollabId)
         {
             var result = fundooContext.CollabTable.FirstOrDefault(x => x.Id == userId && x.CollabId == CollabId);
             if (result != null)

@@ -4,10 +4,14 @@ using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
@@ -16,11 +20,16 @@ namespace FundooNotes.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
+        //Instance variables
+        private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
         private readonly INotesBL notesBL;
         //Constructor of NotesController
-        public NotesController(INotesBL notesBL)
+        public NotesController(INotesBL notesBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
+            this.memoryCache = memoryCache;
+            this.distributedCache = distributedCache;
         }
         //Creation of new note API
         [Authorize]
@@ -76,6 +85,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //get notes by user id api
         [Authorize]
         [HttpGet("{Id}/Get")]
         public IEnumerable<Notes> ViewNotesByUserId()
@@ -94,6 +104,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //Get all notes api
         [Authorize]
         [HttpGet("ViewAll")]
         public List<Notes> ViewAllNotes()
@@ -111,6 +122,32 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //Get all notes by using redis api
+        [HttpGet("redis")]
+        public async Task<IActionResult> GetAllCustomersUsingRedisCache()
+        {
+            var cacheKey = "customerList";
+            string serializedCustomerList;
+            var customerList = new List<Notes>();
+            var redisCustomerList = await distributedCache.GetAsync(cacheKey);
+            if (redisCustomerList != null)
+            {
+                serializedCustomerList = Encoding.UTF8.GetString(redisCustomerList);
+                customerList = JsonConvert.DeserializeObject<List<Notes>>(serializedCustomerList);
+            }
+            else
+            {
+                customerList = (List<Notes>)notesBL.ViewAllNotes();
+                serializedCustomerList = JsonConvert.SerializeObject(customerList);
+                redisCustomerList = Encoding.UTF8.GetBytes(serializedCustomerList);
+                var options = new DistributedCacheEntryOptions()
+                    .SetAbsoluteExpiration(DateTime.Now.AddMinutes(10))
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+                await distributedCache.SetAsync(cacheKey, redisCustomerList, options);
+            }
+            return Ok(customerList);
+        }
+        //Check note archive or not api
         [Authorize]
         [HttpPut("IsArchive")]
         public IActionResult NoteArchive(long userId, long NotesId)
@@ -128,6 +165,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //Check note pinned or not api
         [Authorize]
         [HttpPut("IsPin")]
         public IActionResult NotePin(long userId, long NotesId)
@@ -145,6 +183,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //Check note trashed or not api
         [Authorize]
         [HttpPut("IsTrash")]
         public IActionResult NoteTrash(long userId, long NotesId)
@@ -162,6 +201,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //Update note color api
         [Authorize]
         [HttpPut("Color")]
         public IActionResult NoteColor(long userId, long NotesId, String Color)
@@ -179,6 +219,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
+        //Add image to note api
         [Authorize]
         [HttpPost("Image")]
         public IActionResult ImageUpload(long userId, long NotesId, IFormFile Image)
