@@ -55,22 +55,22 @@ namespace RepositoryLayer.Services
             }
         }
         //Method to update note in database 
-        public Notes NoteUpdate(long NotesId, long userId, NotesUpdate notesUpdate)
+        public Notes NoteUpdate(long NotesId, NotesUpdate notesUpdate)
         {
             try
             {
-                var user = fundooContext.NotesTable.Where(x => x.NotesId == NotesId).FirstOrDefault();
-                if (user != null)
+                var note = fundooContext.NotesTable.Where(x => x.NotesId == NotesId).FirstOrDefault();
+                if (note != null)
                 {
-                    user.Title = notesUpdate.Title;
-                    user.Description = notesUpdate.Description;
-                    user.Color = notesUpdate.Color;
-                    user.Image = notesUpdate.Image;
-                    user.ModifiedAt = notesUpdate.ModifiedAt;
+                    note.Title = notesUpdate.Title;
+                    note.Description = notesUpdate.Description;
+                    note.Color = notesUpdate.Color;
+                    note.Image = notesUpdate.Image;
+                    note.ModifiedAt = notesUpdate.ModifiedAt;
                     //Updating databse for given user id
-                    fundooContext.NotesTable.Update(user);
+                    fundooContext.NotesTable.Update(note);
                     fundooContext.SaveChanges();
-                    return user;
+                    return note;
                 }
                 else
                 {

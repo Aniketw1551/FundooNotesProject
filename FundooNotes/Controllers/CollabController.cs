@@ -16,7 +16,7 @@ namespace FundooNotes.Controllers
     {
         //instance variables
         private readonly ICollabBL collabBL;
-        //Constructor of NotesController
+        //Constructor of CollabController
         public CollabController(ICollabBL collabBL)
         {
             this.collabBL = collabBL;
@@ -65,7 +65,7 @@ namespace FundooNotes.Controllers
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
                 var result = collabBL.RemoveCollab(userId, CollabId);
                 if(result!=null)
-                    return this.Ok(new { Success = true, message = "Collab removed successfully" });
+                    return this.Ok(new { Success = true, message = "Collab removed successfully" , data = result });
                 else
                     return this.BadRequest(new { Success = false, message = "Failed to remove collab. Please try again" });
             }

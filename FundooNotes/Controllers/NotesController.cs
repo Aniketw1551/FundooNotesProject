@@ -48,8 +48,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
-                var result = notesBL.NoteUpdate(userId, NotesId, notesUpdate);
+                var result = notesBL.NoteUpdate(NotesId, notesUpdate);
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Notes updated successfully", data = result });
                 else
