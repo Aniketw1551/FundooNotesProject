@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CollabController.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace FundooNotes.Controllers
+{
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,25 +19,43 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
 
-namespace FundooNotes.Controllers
-{
+    /// <summary>
+    /// COLLAB API
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CollabController : ControllerBase
     {
         ////Instance variables
+
+        /// <summary>The memory cache</summary>
         private readonly IMemoryCache memoryCache;
+
+        /// <summary>The distributed cache</summary>
         private readonly IDistributedCache distributedCache;
+
+        /// <summary>The COLLAB BL</summary>
         private readonly ICollabBL collabBL;
+
         ////Constructor of CollabController
+
+        /// <summary>Initializes a new instance of the <see cref="CollabController" /> class.</summary>
+        /// <param name="collabBL">The COLLAB BL.</param>
+        /// <param name="memoryCache">The memory cache.</param>
+        /// <param name="distributedCache">The distributed cache.</param>
         public CollabController(ICollabBL collabBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.collabBL = collabBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        // Create collab api
-        
+
+        /// <summary>Creates the COLLAB.</summary>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <param name="email">The email.</param>
+        /// <returns>
+        /// Create COLLAB API
+        /// </returns>
         [Authorize]
         [HttpPost("Create")]
         public IActionResult CreateCollab(long notesId, string email)
@@ -49,8 +74,12 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Remove collab api
 
+        /// <summary>Removes the COLLAB.</summary>
+        /// <param name="collabId">The COLLAB identifier.</param>
+        /// <returns>
+        /// Remove COLLAB API
+        /// </returns>
         [Authorize]
         [HttpDelete("Remove")]
         public IActionResult RemoveCollab(long collabId)
@@ -69,8 +98,12 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get collabs by notes id api
 
+        /// <summary>Views the COLLAB by notes identifier.</summary>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <returns>
+        /// Get COLLAB by notes Id API
+        /// </returns>
         [Authorize]
         [HttpGet("{Id}/Get")]
         public IEnumerable<Collaborator> ViewCollabByNotesId(long notesId)
@@ -88,10 +121,13 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get all Collabs api
 
+        /// <summary>Views all collaborators.</summary>
+        /// <returns>
+        ///  Get All COLLAB API
+        /// </returns>
         [Authorize]
-        [HttpGet("ViewAll")]
+        [HttpGet("GetAll")]
         public List<Collaborator> ViewAllCollaborators()
         {
             try
@@ -107,8 +143,11 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get all collab by redis api
 
+        /// <summary>Gets all customers using REDIS cache.</summary>
+        /// <returns>
+        /// REDIS API
+        /// </returns>
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {

@@ -1,16 +1,28 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MsmqModel.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace CommonLayer.Model
+{
+using System;
 using System.Net;
 using System.Net.Mail;
 using Experimental.System.Messaging;
 
-
-namespace CommonLayer.Model
-{
+    /// <summary>
+    /// MSMQ Model
+    /// </summary>
     public class MsmqModel
     {
         ////Object of MessageQueue class
+
+        /// <summary>The message queue</summary>
         MessageQueue messageQueue = new MessageQueue();
         ////Method to Send token on Mail
+
+        /// <summary>Senders the specified token.</summary>
+        /// <param name="token">The token.</param>
         public void Sender(string token)
         {
             ////system private msmq server path 
@@ -23,6 +35,7 @@ namespace CommonLayer.Model
                     ////If path is not there then Creating Path
                     MessageQueue.Create(messageQueue.Path);
                 }
+
                 this.messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
                 ////Delegate Method
                 messageQueue.ReceiveCompleted += MessageQueue_ReceiveCompleted;
@@ -38,6 +51,9 @@ namespace CommonLayer.Model
 
         ////Delegate Method for Sending E-Mail
 
+        /// <summary>Handles the ReceiveCompleted event of the MessageQueue control.</summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="ReceiveCompletedEventArgs" /> instance containing the event data.</param>
         private void MessageQueue_ReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
         {
             var message = this.messageQueue.EndReceive(e.AsyncResult);
@@ -62,6 +78,5 @@ namespace CommonLayer.Model
                 this.messageQueue.BeginReceive();
             }
         }
-
     }
 }

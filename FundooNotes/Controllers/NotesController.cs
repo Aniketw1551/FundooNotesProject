@@ -1,4 +1,16 @@
-﻿using BusinessLayer.Interface;
+﻿//-----------------------------------------------------------------------
+// <copyright file="NotesController.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace FundooNotes.Controllers
+{
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BusinessLayer.Interface;
 using BusinessLayer.Services;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -8,30 +20,42 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FundooNotes.Controllers
-{
+    /// <summary>
+    /// Notes API
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class NotesController : ControllerBase
     {
-        // Instance variables
+        ////Instance variables
+
+        /// <summary>The memory cache</summary>
         private readonly IMemoryCache memoryCache;
+
+        /// <summary>The distributed cache</summary>
         private readonly IDistributedCache distributedCache;
+
+        /// <summary>The notes BL</summary>
         private readonly INotesBL notesBL;
-        // Constructor of NotesController
+        ////Constructor of NotesController
+
+        /// <summary>Initializes a new instance of the <see cref="NotesController" /> class.</summary>
+        /// <param name="notesBL">The notes BL.</param>
+        /// <param name="memoryCache">The memory cache.</param>
+        /// <param name="distributedCache">The distributed cache.</param>
         public NotesController(INotesBL notesBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        // Creation of new note API
+
+        /// <summary>Notes the creation.</summary>
+        /// <param name="notesCreation">The notes creation.</param>
+        /// <returns>
+        /// Create Note API
+        /// </returns>
         [Authorize]
         [HttpPost("Create")]
         public IActionResult NoteCreation(NotesCreation notesCreation)
@@ -50,7 +74,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Update note API
+
+
+        /// <summary>Notes the update.</summary>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <param name="notesUpdate">The notes update.</param>
+        /// <returns>
+        ///  Notes Update API
+        /// </returns>
         [Authorize]
         [HttpPut("Update")]
         public IActionResult NoteUpdate(long notesId, NotesUpdate notesUpdate)
@@ -68,7 +99,13 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Delete Note API
+
+
+        /// <summary>Deletes the note.</summary>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <returns>
+        /// Delete Notes APi
+        /// </returns>
         [Authorize]
         [HttpDelete("Delete")]
         public IActionResult DeleteNote(long notesId)
@@ -85,7 +122,11 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get notes by user id api
+
+        /// <summary>Views the notes by user identifier.</summary>
+        /// <returns>
+        /// Get Notes By user id API
+        /// </returns>
         [Authorize]
         [HttpGet("{Id}/Get")]
         public IEnumerable<Notes> ViewNotesByUserId()
@@ -104,9 +145,13 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get notes by user id api 
+
+        /// <summary>Views all notes.</summary>
+        /// <returns>
+        /// Get All notes API
+        /// </returns>
         [Authorize]
-        [HttpGet("ViewAll")]
+        [HttpGet("GetAll")]
         public List<Notes> ViewAllNotes()
         {
             try
@@ -122,7 +167,11 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get all notes by using redis api
+
+        /// <summary>Gets all customers using redis cache.</summary>
+        /// <returns>
+        ///  Get Notes By redis API
+        /// </returns>
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
@@ -147,7 +196,13 @@ namespace FundooNotes.Controllers
             }
             return Ok(customerList);
         }
-        // Checking notes Archived or not
+
+        /// <summary>Notes the archive.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <returns>
+        ///  Checking Notes Archived API
+        /// </returns>
         [Authorize]
         [HttpPut("IsArchive")]
         public IActionResult NoteArchive(long userId, long notesId)
@@ -165,7 +220,13 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Checking notes pinned or not
+
+        /// <summary>Notes the pin.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <returns>
+        ///   Checking Notes Pinned API
+        /// </returns>
         [Authorize]
         [HttpPut("IsPin")]
         public IActionResult NotePin(long userId, long notesId)
@@ -183,7 +244,13 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Checking notes trashed or not
+
+        /// <summary>Notes the trash.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <returns>
+        ///   Checking Notes Trashed API
+        /// </returns>
         [Authorize]
         [HttpPut("IsTrash")]
         public IActionResult NoteTrash(long userId, long notesId)
@@ -201,7 +268,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Changing color of note api
+
+        /// <summary>Notes the color.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <param name="color">The color.</param>
+        /// <returns>
+        ///   Changing Notes Color API
+        /// </returns>
         [Authorize]
         [HttpPut("Color")]
         public IActionResult NoteColor(long userId, long notesId, String color)
@@ -219,7 +293,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Adding image to note api
+
+        /// <summary>Images the upload.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <param name="image">The image.</param>
+        /// <returns>
+        /// Add Image to Note API
+        /// </returns>
         [Authorize]
         [HttpPost("Image")]
         public IActionResult ImageUpload(long userId, long notesId, IFormFile image)

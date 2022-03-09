@@ -1,26 +1,45 @@
-﻿using BusinessLayer.Interface;
-using CommonLayer.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UserController.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace FundooNotes.Controllers
+{
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BusinessLayer.Interface;
+using CommonLayer.Model;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace FundooNotes.Controllers
-{
     [Route("api/[controller]")]
     [ApiController]
+
+    /// <summary>
+    ///   User Controller API
+    /// </summary>
     public class UserController : ControllerBase
     {
+        /// <summary>The user BL</summary>
         private readonly IUserBL userBL;
-        // Constructor of USerController
+
+        ////Constructor of USerController
+
+        /// <summary>Initializes a new instance of the <see cref="UserController" /> class.</summary>
+        /// <param name="userBL">The user BL.</param>
         public UserController(IUserBL userBL)
         {
             this.userBL = userBL;
         }
-        // Registration of User
+
+        /// <summary>Registers the specified user registration.</summary>
+        /// <param name="userRegistration">The user registration.</param>
+        /// <returns>
+        ///  User Registration API
+        /// </returns>
         [HttpPost("Register")]
         public IActionResult Register(UserRegistration userRegistration)
         {
@@ -37,7 +56,12 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Login of User 
+
+        /// <summary>Logins the specified user login.</summary>
+        /// <param name="userLogin">The user login.</param>
+        /// <returns>
+        /// User Login API
+        /// </returns>
         [HttpPost("Login")]
         public IActionResult Login(UserLogin userLogin)
         {
@@ -54,7 +78,12 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //User Forgot Password Api
+
+        /// <summary>Forgot the password.</summary>
+        /// <param name="email">The email.</param>
+        /// <returns>
+        /// Forgot Password API
+        /// </returns>
         [HttpPost("ForgotPassword")]
         public IActionResult ForgotPassword(string email)
         {
@@ -71,21 +100,26 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //User Reset Password Api
+
+        /// <summary>Resets the password.</summary>
+        /// <param name="newPassword">The new password.</param>
+        /// <param name="confirmPassword">The confirm password.</param>
+        /// <returns>
+        ///  Reset Password API
+        /// </returns>
         [HttpPost("ResetPassword")]
         public IActionResult ResetPassword(string newPassword, string confirmPassword)
         {
             try
             {
                 var email = User.FindFirst(ClaimTypes.Email).Value.ToString();
-                if (userBL.ResetPassword(email,newPassword,confirmPassword))
+                if (userBL.ResetPassword(email, newPassword, confirmPassword))
                     return this.Ok(new { Success = true, message = "Password reset successfully" });
                 else
                     return this.BadRequest(new { Success = false, message = "Error while resetting your password please try again" });
             }
             catch (Exception)
-            {
-
+            { 
                 throw;
             }
         }

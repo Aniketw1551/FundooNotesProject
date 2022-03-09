@@ -1,11 +1,19 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Cipher.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace CommonLayer.Model
+{
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Collections.Generic;
 
-namespace CommonLayer.Model
-{
+    /// <summary>
+    /// Cipher Model
+    /// </summary>
     public class Cipher
     {
         /// <summary>
@@ -13,7 +21,6 @@ namespace CommonLayer.Model
         /// </summary>
         /// <param name="encryptPassword">Encrypt password</param>
         /// <returns>encrypt password</returns>
-        
         public static string Encrypt(string encryptPassword)
         {
             try
@@ -52,7 +59,6 @@ namespace CommonLayer.Model
         /// </summary>
         /// <param name="cipherText">The cipher</param>
         /// <returns>decrypt password</returns>
-        
         public static string Decrypt(string cipherText)
         {
             try
@@ -75,6 +81,7 @@ namespace CommonLayer.Model
                             cs.Write(cipherBytes, 0, cipherBytes.Length);
                             cs.Close();
                         }
+
                         cipherText = Encoding.Unicode.GetString(ms.ToArray());
                     }
                 }

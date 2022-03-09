@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LabelBL.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace BusinessLayer.Services
+{
+using System;
 using System.Text;
 using System.Collections.Generic;
 using BusinessLayer.Interface;
@@ -6,20 +13,33 @@ using CommonLayer.Model;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
 
-namespace BusinessLayer.Services
-{
+    /// <summary>
+    /// Label Class
+    /// </summary>
     public class LabelBL : ILabelBL
     {
-        // Instance varable
+        ////Instance varable
+
+        /// <summary>The label RL</summary>
         private readonly ILabelRL labelRL;
 
-        // Constructor of LabelBL
+        ////Constructor of LabelBL
+
+        /// <summary>Initializes a new instance of the <see cref="LabelBL" /> class.</summary>
+        /// <param name="labelRL">The label RL.</param>
         public LabelBL(ILabelRL labelRL)
         {
             this.labelRL = labelRL;
         }
 
-            public Labels CreateLabel(long userId, long notesId, string labelName)
+        /// <summary>Creates the label.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <param name="labelName">Name of the label.</param>
+        /// <returns>
+        ///  Create Label
+        /// </returns>
+        public Labels CreateLabel(long userId, long notesId, string labelName)
             {
                 try
                 {
@@ -31,6 +51,13 @@ namespace BusinessLayer.Services
                 }
             }
 
+        /// <summary>Updates the label.</summary>
+        /// <param name="labelName">Name of the label.</param>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>
+        ///  Update Label
+        /// </returns>
         public Labels UpdateLabel(string labelName, long notesId, long userId)
         {
             try
@@ -43,6 +70,11 @@ namespace BusinessLayer.Services
             }
         }
 
+        /// <summary>Views the labels by user identifier.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <returns>
+        ///  Get Labels by User Id
+        /// </returns>
         public IEnumerable<Labels> ViewLabelsByUserId(long userId)
         {
             try
@@ -55,6 +87,11 @@ namespace BusinessLayer.Services
             }
         }
 
+        /// <summary>Views the labels by notes identifier.</summary>
+        /// <param name="notesId">The notes identifier.</param>
+        /// <returns>
+        /// Get Labels By Notes Id
+        /// </returns>
         public IEnumerable<Labels> ViewLabelsByNotesId(long notesId)
         {
             try
@@ -67,6 +104,10 @@ namespace BusinessLayer.Services
             }
         }
 
+        /// <summary>Views all labels.</summary>
+        /// <returns>
+        /// Get All Labels
+        /// </returns>
         public List<Labels> ViewAllLabels()
         {
             try
@@ -79,6 +120,12 @@ namespace BusinessLayer.Services
             }
         }
 
+        /// <summary>Remove label the specified user identifier.</summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="labelId">The label identifier.</param>
+        /// <returns>
+        ///  Delete Label
+        /// </returns>
         public bool Removelabel(long userId, long labelId)
         {
             try

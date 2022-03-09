@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UserRL.cs" company="Aniket">
+// Company copyright tag.
+// </copyright>
+//-----------------------------------------------------------------------
+namespace RepositoryLayer.Services
+{
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -9,33 +16,45 @@ using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
-using System.Collections.Generic;
 
-
-namespace RepositoryLayer.Services
-{
+    /// <summary>
+    /// User Class
+    /// </summary>
     public class UserRL : IUserRL
     {
         ////Instance variables
+
+        /// <summary> The FUNDOO CONTEXT</summary>
         private readonly FundooContext fundooContext;
-        private readonly IConfiguration _Appsettings;
+
+        /// <summary>
+        /// The APPSETTINGS
+        /// </summary>
+        private readonly IConfiguration appsettings;
         ////Constructor
-        public UserRL(FundooContext fundooContext, IConfiguration _Appsettings)
+
+        /// <summary>Initializes a new instance of the <see cref="UserRL" /> class.</summary>
+        /// <param name="fundooContext">The FUNDOO CONTEXT.</param>
+        /// <param name="appsettings">The APPSETTINGS.</param>
+        public UserRL(FundooContext fundooContext, IConfiguration appsettings)
         {
             this.fundooContext = fundooContext;
-            this._Appsettings = _Appsettings;
+            this.appsettings = appsettings;
         }
         ////Constructor of UserRL
+
+        /// <summary>Initializes a new instance of the <see cref="UserRL" /> class.</summary>
+        /// <param name="fundooContext">The FUNDOO CONTEXT.</param>
         public UserRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
+
         /// <summary>
         /// /Method for user registration
         /// </summary>
-        /// <param name="userReg">User</param>
-        /// <returns>User</returns>
-       
+        /// <param name="userReg">The User Registration</param>
+        /// <returns>User Details</returns>
         public User Registration(UserRegistration userReg)
         {
             try
@@ -45,12 +64,14 @@ namespace RepositoryLayer.Services
                 newUser.LastName = userReg.LastName;
                 newUser.Email = userReg.Email;
                 newUser.Password = Cipher.Encrypt(userReg.Password);
-                fundooContext.UserTable.Add(newUser);
-                int result = fundooContext.SaveChanges();
+                this.fundooContext.UserTable.Add(newUser);
+                int result = this.fundooContext.SaveChanges();
                 if (result > 0)
                     return newUser;
                 else
+                {
                     return null;
+                }
             }
             catch (Exception)
             {
@@ -61,22 +82,21 @@ namespace RepositoryLayer.Services
         /// <summary>
         /// /Method for login
         /// </summary>
-        /// <param name="email">Email</param>
-        /// <param name="password">Password</param>
-        /// <returns>Login</returns>
-        
+        /// <param name="email">The Email</param>
+        /// <param name="password">The Password</param>
+        /// <returns>User Login</returns>
         public string Login(string email, string password)
         {
             try
             {
                 if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                     return null;
-                // LINQ Query to match the input in database
+                ////LINQ Query to match the input in database
                 var result = this.fundooContext.UserTable.FirstOrDefault(x => x.Email == email);
                 string decrypt = Cipher.Decrypt(result.Password);
                 var id = result.Id;
                 if (result != null && decrypt == password)
-                    // Calling Jwt Token method 
+                    ////Calling Jwt Token method 
                     return GenerateSecurityToken(result.Email, id);
                 else
                     return null;
@@ -88,38 +108,10 @@ namespace RepositoryLayer.Services
         }
 
         /// <summary>
-        /// Method for Jwt Token For Login authentication with email and id
-        /// </summary>
-        /// <param name="Email">Email</param>
-        /// <param name="Id">Id</param>
-        /// <returns>Token</returns>
-        
-        private string GenerateSecurityToken(string email, long Id)
-        {
-            // structures of JWT Token
-            // header
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Appsettings["Jwt:SecretKey"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            // payload
-            var claims = new[] {
-                new Claim(ClaimTypes.Email,email),
-                new Claim("Id",Id.ToString())
-            };
-            // signature
-            var token = new JwtSecurityToken(_Appsettings["Jwt:Issuer"],
-              _Appsettings["Jwt:Issuer"],
-              claims,
-              expires: DateTime.Now.AddMinutes(60),
-              signingCredentials: credentials);
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        /// <summary>
         /// Method for Forgot password token generation
         /// </summary>
-        /// <param name="email">Email</param>
-        /// <returns>Link</returns>
-        
+        /// <param name="email">The Email</param>
+        /// <returns>Password ChangeLink</returns>
         public string ForgotPassword(string email)
         {
             try
@@ -148,11 +140,10 @@ namespace RepositoryLayer.Services
         /// <summary>
         /// Method for Reset password using token
         /// </summary>
-        /// <param name="email">Email</param>
-        /// <param name="newPassword">NewPassword</param>
-        /// <param name="confirmPassword">ConfirmPassword</param>
-        /// <returns>Reset</returns>
-        
+        /// <param name="email">The Email</param>
+        /// <param name="newPassword">The NewPassword</param>
+        /// <param name="confirmPassword">The ConfirmPassword</param>
+        /// <returns>Reset Password</returns>
         public bool ResetPassword(string email, string newPassword, string confirmPassword)
         {
             try
@@ -176,6 +167,32 @@ namespace RepositoryLayer.Services
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Method for JWT Token For Login authentication with email and id
+        /// </summary>
+        /// <param name="email">The Email</param>
+        /// <param name="Id">The Id</param>
+        /// <returns>Token</returns>
+        private string GenerateSecurityToken(string email, long Id)
+        {
+            ////structures of JWT Token
+            ////Header
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appsettings["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            ////Payload
+            var claims = new[] {
+                new Claim(ClaimTypes.Email, email),
+                new Claim("Id", Id.ToString())
+            };
+            ////Signature
+            var token = new JwtSecurityToken(appsettings["Jwt:Issuer"],
+              appsettings["Jwt:Issuer"],
+              claims,
+              expires: DateTime.Now.AddMinutes(60),
+              signingCredentials: credentials);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
