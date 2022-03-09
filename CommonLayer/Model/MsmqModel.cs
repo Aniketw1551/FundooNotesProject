@@ -1,45 +1,46 @@
-﻿using Experimental.System.Messaging;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
+using Experimental.System.Messaging;
+
 
 namespace CommonLayer.Model
 {
     public class MsmqModel
     {
-        //Object of MessageQueue class
+        ////Object of MessageQueue class
         MessageQueue messageQueue = new MessageQueue();
-        //Method to Send token on Mail
+        ////Method to Send token on Mail
         public void Sender(string token)
         {
-            //system private msmq server path 
+            ////system private msmq server path 
             messageQueue.Path = @".\private$\Tokens";
             try
             {
-                //Checking Path is exists or Not
+                ////Checking Path is exists or Not
                 if (!MessageQueue.Exists(messageQueue.Path))
                 {
-                    //If path is not there then Creating Path
+                    ////If path is not there then Creating Path
                     MessageQueue.Create(messageQueue.Path);
                 }
-                messageQueue.Formatter = new XmlMessageFormatter(new Type[] {typeof(string)});
-                //Delegate Method
+                this.messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
+                ////Delegate Method
                 messageQueue.ReceiveCompleted += MessageQueue_ReceiveCompleted;
-                messageQueue.Send(token);
-                messageQueue.BeginReceive();
-                messageQueue.Close();
+                this.messageQueue.Send(token);
+                this.messageQueue.BeginReceive();
+                this.messageQueue.Close();
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        //Delegate Method for Sending E-Mail
+
+        ////Delegate Method for Sending E-Mail
+
         private void MessageQueue_ReceiveCompleted(object sender, ReceiveCompletedEventArgs e)
         {
-            var message = messageQueue.EndReceive(e.AsyncResult);
+            var message = this.messageQueue.EndReceive(e.AsyncResult);
             string token = message.Body.ToString();
             try
             {
@@ -58,8 +59,9 @@ namespace CommonLayer.Model
             }
             catch (Exception)
             {
-                messageQueue.BeginReceive();
+                this.messageQueue.BeginReceive();
             }
         }
+
     }
 }

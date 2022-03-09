@@ -1,4 +1,10 @@
-﻿using BusinessLayer.Interface;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BusinessLayer.Interface;
+using CommonLayer.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,11 +12,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
 {
@@ -18,18 +19,19 @@ namespace FundooNotes.Controllers
     [ApiController]
     public class LabelController : ControllerBase
     {
-        //instance variables
+        ////Instance variables
         private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
         private readonly ILabelBL labelBL;
-        //Constructor of LabelController
+        ////Constructor of LabelController
         public LabelController(ILabelBL labelBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.labelBL = labelBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        //Create Label API
+        // Create label Api
+
         [Authorize]
         [HttpPost("Create")]
         public IActionResult CreateLabel(long notesId, string labelName)
@@ -48,7 +50,8 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Update Label API
+        // Update Label API
+
         [Authorize]
         [HttpPut("Update")]
         public IActionResult UpdateLabel(string labelName, long notesId)
@@ -66,8 +69,9 @@ namespace FundooNotes.Controllers
             {
                 throw;
             }
-        }
-        //Remove Label API
+        }    
+        // Remove Label API
+
         [Authorize]
         [HttpDelete("Remove")]
         public IActionResult RemoveLabel(long labelId)
@@ -85,14 +89,15 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get label by notes id api
+        // Get label by notes id api
+
         [Authorize]
         [HttpGet("Get")]
-        public IEnumerable<Labels> ViewLabelsByNotesId(long NotesId)
+        public IEnumerable<Labels> ViewLabelsByNotesId(long notesId)
         {
             try
             {
-                var result = labelBL.ViewLabelsByNotesId(NotesId);
+                var result = labelBL.ViewLabelsByNotesId(notesId);
                 if (result != null)
                     return result;
                 else
@@ -103,7 +108,8 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get label by user id api
+        // Get label by user id api
+
         [Authorize]
         [HttpGet("{Id}/Id")]
         public IEnumerable<Labels> ViewLabelsByUserId()
@@ -122,7 +128,8 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all labels api
+        // Get all labels api
+
         [Authorize]
         [HttpGet("ViewAll")]
         public List<Labels> ViewAllLabels()
@@ -140,7 +147,8 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all labels using redis api
+        // Redis api
+
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
@@ -167,4 +175,3 @@ namespace FundooNotes.Controllers
         }
     }
 }
-

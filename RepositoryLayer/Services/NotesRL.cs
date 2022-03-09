@@ -1,32 +1,37 @@
-﻿using CloudinaryDotNet;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using CommonLayer.Model;
 using Microsoft.AspNetCore.Http;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace RepositoryLayer.Services
 {
     public class NotesRL : INotesRL
     {
-        //instance variable 
+        // Instance variable 
         private readonly FundooContext fundooContext;
-        //cloudinary 
+        // Cloudinary constants
         private const string CloudName = "ani1551";
         private const string ApiKey = "334343811552193";
         private const string ApiSecret = "0MrHz-x-np6XYuk1e-KiOxK0YSE";
 
-        //Constructor
+        // Constructor
         public NotesRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
-        //Method to create Note in database
+        /// <summary>
+        /// Method to create Note in database
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesCreation"></param>
+        /// <returns></returns>
         public Notes NoteCreation(long userId, NotesCreation notesCreation)
         {
             try
@@ -53,13 +58,18 @@ namespace RepositoryLayer.Services
             {
                 throw;
             }
-        }
-        //Method to update note in database 
-        public Notes NoteUpdate(long NotesId, NotesUpdate notesUpdate)
+        } 
+        /// <summary>
+        /// Method to update note in database 
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <param name="notesUpdate"></param>
+        /// <returns></returns>
+        public Notes NoteUpdate(long notesId, NotesUpdate notesUpdate)
         {
             try
             {
-                var note = fundooContext.NotesTable.Where(x => x.NotesId == NotesId).FirstOrDefault();
+                var note = fundooContext.NotesTable.Where(x => x.NotesId == notesId).FirstOrDefault();
                 if (note != null)
                 {
                     note.Title = notesUpdate.Title;
@@ -82,12 +92,16 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to delete note 
-        public bool DeleteNote(long NotesId)
+        /// <summary>
+        /// Method to delete note
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+        public bool DeleteNote(long notesId)
         {
             try
             {
-                var user = fundooContext.NotesTable.Where(x => x.NotesId == NotesId).FirstOrDefault();
+                var user = fundooContext.NotesTable.Where(x => x.NotesId == notesId).FirstOrDefault();
                 if (user != null)
                 {
                     //Removing note from the database
@@ -103,7 +117,11 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to get details of note of given user id
+        /// <summary>
+        /// Method to get details of note of given user id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IEnumerable<Notes> ViewNotesByUserId(long userId)
         {
             try
@@ -123,7 +141,10 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to get all notes present in database
+        /// <summary>
+        /// Method to get all notes present in database
+        /// </summary>
+        /// <returns></returns>
         public List<Notes> ViewAllNotes()
         {
             try
@@ -142,12 +163,18 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to check note is archived or not
-        public Notes NoteArchive(long userId, long NotesId)
+        /// <summary>
+        /// Method to check note is archived or not
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+
+        public Notes NoteArchive(long userId, long notesId)
         {
             try
             {
-                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == NotesId);
+                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == notesId);
                 if (note != null)
                 {
                     bool CheckArchive = note.IsArchieve;
@@ -171,12 +198,17 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to check note is pinned or not
-        public Notes NotePin(long userId, long NotesId)
+        /// <summary>
+        /// Method to check note is pinned or not
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+        public Notes NotePin(long userId, long notesId)
         {
             try
             {
-                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == NotesId);
+                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == notesId);
                 if (note != null)
                 {
                     bool CheckPin = note.IsPin;
@@ -200,12 +232,17 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to check note is trashed or not
-        public Notes NoteTrash(long userId, long NotesId)
+        /// <summary>
+        /// Method to check note is trashed or not
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+        public Notes NoteTrash(long userId, long notesId)
         {
             try
             {
-                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == NotesId);
+                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == notesId);
                 if (note != null)
                 {
                     bool CheckTrash = note.IsTrash;
@@ -229,15 +266,21 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to change color of note
-        public Notes NoteColor(long NotesId, long userId, string Color)
+        /// <summary>
+        /// Method to change color of note
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <param name="userId"></param>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public Notes NoteColor(long notesId, long userId, string color)
         {
             try
             {
-                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == NotesId);
+                Notes note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == notesId);
                 if (note != null)
                 {
-                    note.Color = Color;
+                    note.Color = color;
                     fundooContext.SaveChanges();
                     return note;
                 }
@@ -251,12 +294,18 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to upload image
-        public Notes ImageUpload(long userId, long NotesId, IFormFile image)
+        /// <summary>
+        /// Method to upload image
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesId"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        public Notes ImageUpload(long userId, long notesId, IFormFile image)
         {
             try
             {
-                var note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == NotesId);
+                var note = fundooContext.NotesTable.FirstOrDefault(x => x.Id == userId && x.NotesId == notesId);
                 if (note != null)
                 {
                     Account account = new Account(CloudName, ApiKey, ApiSecret);

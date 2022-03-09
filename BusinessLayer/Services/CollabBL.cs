@@ -1,63 +1,63 @@
-﻿using BusinessLayer.Interface;
+﻿using System;
+using System.Collections.Generic;
+using BusinessLayer.Interface;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BusinessLayer.Services
 {
     public class CollabBL : ICollabBL
     {
-        //instance varable
+        // Instance varable
         private readonly ICollabRL collabRL;
 
-        //Constructor of UserBL
+        // Constructor of CollabBL
         public CollabBL(ICollabRL collabRL)
         {
             this.collabRL = collabRL;
         }
+
         public Collaborator CreateCollab(long userId, long notesId, string email)
         {
             try
             {
-                return collabRL.CreateCollab(userId, notesId, email);
+                return this.collabRL.CreateCollab(userId, notesId, email);
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-        public IEnumerable<Collaborator> ViewCollabByNotesId(long NotesId)
+
+        public IEnumerable<Collaborator> ViewCollabByNotesId(long notesId)
         {
             try
-            {
-                return collabRL.ViewCollabByNotesId(NotesId);
+            { 
+                return this.collabRL.ViewCollabByNotesId(notesId);
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
         public List<Collaborator> ViewAllCollaborators()
         {
             try
             {
-                return collabRL.ViewAllCollaborators();
+                return this.collabRL.ViewAllCollaborators();
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-            public Collaborator RemoveCollab(long userId, long CollabId)
-        {
+
+       public Collaborator RemoveCollab(long userId, long collabId)
+        { 
             try
             {
-                return collabRL.RemoveCollab(userId, CollabId);
+                return this.collabRL.RemoveCollab(userId, collabId);
             }
             catch (Exception)
             {

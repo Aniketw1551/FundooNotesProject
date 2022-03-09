@@ -1,15 +1,16 @@
-﻿using CommonLayer.Model;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using CommonLayer.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RepositoryLayer.Context;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
-using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+
 
 namespace RepositoryLayer.Services
 {
@@ -17,18 +18,23 @@ namespace RepositoryLayer.Services
     {
         private readonly FundooContext fundooContext;
         private readonly IConfiguration _Appsettings;
-        //Constructor
+        // Constructor
         public UserRL(FundooContext fundooContext, IConfiguration _Appsettings)
         {
             this.fundooContext = fundooContext;
             this._Appsettings = _Appsettings;
         }
-        //Constructor of UserRL
+        // Constructor of UserRL
         public UserRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
-        //Method for user registration
+        /// <summary>
+        /// /Method for user registration
+        /// </summary>
+        /// <param name="userReg">User</param>
+        /// <returns>User</returns>
+       
         public User Registration(UserRegistration userReg)
         {
             try
@@ -50,19 +56,26 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method for login
-        public string Login(string Email, string Password)
+
+        /// <summary>
+        /// /Method for login
+        /// </summary>
+        /// <param name="email">Email</param>
+        /// <param name="password">Password</param>
+        /// <returns>Login</returns>
+        
+        public string Login(string email, string password)
         {
             try
             {
-                if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                     return null;
-                //LINQ Query to match the input in database
-                var result = fundooContext.UserTable.FirstOrDefault(x => x.Email == Email);
+                // LINQ Query to match the input in database
+                var result = this.fundooContext.UserTable.FirstOrDefault(x => x.Email == email);
                 string decrypt = Cipher.Decrypt(result.Password);
                 var id = result.Id;
-                if (result != null && decrypt == Password)
-                    //Calling jwt Token method
+                if (result != null && decrypt == password)
+                    // Calling Jwt Token method 
                     return GenerateSecurityToken(result.Email, id);
                 else
                     return null;
@@ -72,19 +85,26 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method for Jwt Token For Login authentication with email and id
-        private string GenerateSecurityToken(string Email, long Id)
+
+        /// <summary>
+        /// Method for Jwt Token For Login authentication with email and id
+        /// </summary>
+        /// <param name="Email"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        
+        private string GenerateSecurityToken(string email, long Id)
         {
-            //structures of JWT Token
-            //header
+            // structures of JWT Token
+            // header
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Appsettings["Jwt:SecretKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            //payload
+            // payload
             var claims = new[] {
-                new Claim(ClaimTypes.Email,Email),
+                new Claim(ClaimTypes.Email,email),
                 new Claim("Id",Id.ToString())
             };
-            //signature
+            // signature
             var token = new JwtSecurityToken(_Appsettings["Jwt:Issuer"],
               _Appsettings["Jwt:Issuer"],
               claims,
@@ -92,30 +112,45 @@ namespace RepositoryLayer.Services
               signingCredentials: credentials);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        //Method for Forgot password token generation
+
+        /// <summary>
+        /// Method for Forgot password token generation
+        /// </summary>
+        /// <param name="email">Email</param>
+        /// <returns>Link</returns>
         public string ForgotPassword(string email)
         {
             try
             {
-                //checking Email exists or not
+                ////checking Email exists or not
                 var existingEmail = this.fundooContext.UserTable.Where(x => x.Email == email).FirstOrDefault();
                 if (existingEmail != null)
                 {
-                    //Generating Token 
+                    //// Generating Token 
                     var token = GenerateSecurityToken(existingEmail.Email, existingEmail.Id);
-                    //passing Token to MsmqModel
+                    //// Passing Token to MsmqModel
                     new MsmqModel().Sender(token);
                     return token;
                 }
                 else
+                {
                     return null;
+                }
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        //Method for Reset password using token 
+
+        /// <summary>
+        /// Method for Reset password using token
+        /// </summary>
+        /// <param name="email">Email</param>
+        /// <param name="newPassword">NewPassword</param>
+        /// <param name="confirmPassword">ConfirmPassword</param>
+        /// <returns>Reset</returns>
+        /// 
         public bool ResetPassword(string email, string newPassword, string confirmPassword)
         {
             try
@@ -123,15 +158,17 @@ namespace RepositoryLayer.Services
                 // Checking if new password matches with confirm password
                 if (newPassword == confirmPassword)
                 {
-                    //matching in database
-                    var userP = fundooContext.UserTable.Where(x => x.Email == email).FirstOrDefault();
+                    //// matching in database
+                    var userP = this.fundooContext.UserTable.Where(x => x.Email == email).FirstOrDefault();
                     userP.Password = confirmPassword;
-                    //changing the old password to new password
-                    fundooContext.SaveChanges();
+                    //// changing the old password to new password
+                    this.fundooContext.SaveChanges();
                     return true;
                 }
                 else
+                {
                     return false;
+                }
             }
             catch (Exception)
             {

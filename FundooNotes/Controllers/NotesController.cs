@@ -20,18 +20,18 @@ namespace FundooNotes.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
-        //Instance variables
+        // Instance variables
         private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
         private readonly INotesBL notesBL;
-        //Constructor of NotesController
+        // Constructor of NotesController
         public NotesController(INotesBL notesBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.notesBL = notesBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        //Creation of new note API
+        // Creation of new note API
         [Authorize]
         [HttpPost("Create")]
         public IActionResult NoteCreation(NotesCreation notesCreation)
@@ -50,14 +50,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Update note API
+        // Update note API
         [Authorize]
         [HttpPut("Update")]
-        public IActionResult NoteUpdate(long NotesId, NotesUpdate notesUpdate)
+        public IActionResult NoteUpdate(long notesId, NotesUpdate notesUpdate)
         {
             try
             {
-                var result = notesBL.NoteUpdate(NotesId, notesUpdate);
+                var result = notesBL.NoteUpdate(notesId, notesUpdate);
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Notes updated successfully", data = result });
                 else
@@ -85,7 +85,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get Notes by user id api
+        // Get notes by user id api
         [Authorize]
         [HttpGet("{Id}/Get")]
         public IEnumerable<Notes> ViewNotesByUserId()
@@ -104,7 +104,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        // Get all notes api
+        // Get notes by user id api 
         [Authorize]
         [HttpGet("ViewAll")]
         public List<Notes> ViewAllNotes()
@@ -122,7 +122,7 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all notes by using redis api
+        // Get all notes by using redis api
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
@@ -147,14 +147,14 @@ namespace FundooNotes.Controllers
             }
             return Ok(customerList);
         }
-        //Checking notes is archived or not api
+        // Checking notes Archived or not
         [Authorize]
         [HttpPut("IsArchive")]
-        public IActionResult NoteArchive(long userId, long NotesId)
+        public IActionResult NoteArchive(long userId, long notesId)
         {
             try
             {
-                var result = notesBL.NoteArchive(userId, NotesId);
+                var result = notesBL.NoteArchive(userId, notesId);
                 if (result != null)
                     return this.Ok(new { Success = true, message = "checking note archived or not", data = result });
                 else
@@ -165,14 +165,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Checking notes is pinned or not api
+        // Checking notes pinned or not
         [Authorize]
         [HttpPut("IsPin")]
-        public IActionResult NotePin(long userId, long NotesId)
+        public IActionResult NotePin(long userId, long notesId)
         {
             try
             {
-                var result = (notesBL.NotePin(userId, NotesId));
+                var result = (notesBL.NotePin(userId, notesId));
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Cheking note pinned or not", data = result });
                 else
@@ -183,14 +183,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Checking notes is trashed or not api
+        // Checking notes trashed or not
         [Authorize]
         [HttpPut("IsTrash")]
-        public IActionResult NoteTrash(long userId, long NotesId)
+        public IActionResult NoteTrash(long userId, long notesId)
         {
             try
             {
-                var result = (notesBL.NoteTrash(userId, NotesId));
+                var result = (notesBL.NoteTrash(userId, notesId));
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Cheking note trashed or not", data = result });
                 else
@@ -201,14 +201,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Changing color of notes api
+        // Changing color of note api
         [Authorize]
         [HttpPut("Color")]
-        public IActionResult NoteColor(long userId, long NotesId, String Color)
+        public IActionResult NoteColor(long userId, long notesId, String color)
         {
             try
             {
-                var result = (notesBL.NoteColor(userId, NotesId, Color));
+                var result = (notesBL.NoteColor(userId, notesId, color));
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Notes color changed successfully", data = result });
                 else
@@ -219,14 +219,14 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Adding image to notes api
+        // Adding image to note api
         [Authorize]
         [HttpPost("Image")]
-        public IActionResult ImageUpload(long userId, long NotesId, IFormFile Image)
+        public IActionResult ImageUpload(long userId, long notesId, IFormFile image)
         {
             try
             {
-                var result = notesBL.ImageUpload(userId, NotesId, Image);
+                var result = notesBL.ImageUpload(userId, notesId, image);
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Image uploaded successfully", data = result });
                 else

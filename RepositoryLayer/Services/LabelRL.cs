@@ -1,23 +1,31 @@
-﻿using RepositoryLayer.Context;
-using RepositoryLayer.Entity;
-using RepositoryLayer.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CommonLayer.Model;
+using RepositoryLayer.Context;
+using RepositoryLayer.Entity;
+using RepositoryLayer.Interface;
 using System.Text;
 
 namespace RepositoryLayer.Services
 {
     public class LabelRL : ILabelRL
     {
+        // Instance variable
         private readonly FundooContext fundooContext;
 
-        //Constructor
+        // Constructor
         public LabelRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
-        //Method To create label
+        /// <summary>
+        /// Method to create new LAbel
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesId"></param>
+        /// <param name="labelName"></param>
+        /// <returns></returns>
         public Labels CreateLabel(long userId, long notesId, string labelName)
         {
             try
@@ -41,7 +49,13 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //To update label
+        /// <summary>
+        /// Method to update label
+        /// </summary>
+        /// <param name="labelName"></param>
+        /// <param name="notesId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public Labels UpdateLabel(string labelName, long notesId, long userId)
         {
             try
@@ -64,7 +78,12 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        // TO get labels by user id
+            
+        /// <summary>
+        /// Method to get labels by user id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IEnumerable<Labels> ViewLabelsByUserId(long userId)
         {
             try
@@ -84,7 +103,11 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //To get labels by notes id
+        /// <summary>
+        /// Method to get labels by notes id
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
         public IEnumerable<Labels> ViewLabelsByNotesId(long notesId)
         {
             try
@@ -104,7 +127,10 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Get all labels present in database 
+        /// <summary>
+        /// Method to get all labels
+        /// </summary>
+        /// <returns></returns>
         public List<Labels> ViewAllLabels()
         {
             try
@@ -123,7 +149,12 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //To remove label
+        /// <summary>
+        /// Method too remove label
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
         public bool Removelabel(long userId, long labelId)
         {
             var result = fundooContext.LabelTable.FirstOrDefault(x => x.Id == userId && x.LabelId == labelId);
@@ -137,5 +168,6 @@ namespace RepositoryLayer.Services
             else
                 return false;
         }
+        
     }
 }

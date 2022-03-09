@@ -10,7 +10,7 @@ using RepositoryLayer.Context;
 namespace RepositoryLayer.Migrations
 {
     [DbContext(typeof(FundooContext))]
-    [Migration("20220308185107_LabelTable Migration")]
+    [Migration("20220307061217_LabelTable Migration")]
     partial class LabelTableMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

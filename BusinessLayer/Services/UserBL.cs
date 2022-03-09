@@ -1,63 +1,66 @@
-﻿using BusinessLayer.Interface;
+﻿using System;
+using BusinessLayer.Interface;
 using CommonLayer.Model;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interface;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BusinessLayer.Services
 {
     public class UserBL : IUserBL
     {
         private readonly IUserRL userRL;
-        //Constructor of UserBL
+
+        // Constructor of UserBL
         public UserBL(IUserRL userRL)
         {
             this.userRL = userRL;
         }
-        //Method to return UserRegistration object 
+
+        // Method to return UserRegistration object 
         public User Registration(UserRegistration userRegistration)
         {
             try
             {
-                return userRL.Registration(userRegistration);
+                return this.userRL.Registration(userRegistration);
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
         // Method to return login object
-        public string Login(string Email, string Password)
+        public string Login(string email, string password)
         {
             try
             {
-                return userRL.Login(Email, Password);
+                return this.userRL.Login(email, password);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        //Method to return Forgot password object
+
+        // Method to return Forgot password object
         public string ForgotPassword(string email)
         {
             try
             {
-                return userRL.ForgotPassword(email);
+                return this.userRL.ForgotPassword(email);
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public bool ResetPassword(string email,string newPassword, string confirmPassword)
+
+        // Method to return return password object
+        public bool ResetPassword(string email, string newPassword, string confirmPassword)
         {
             try
             {
-                return userRL.ResetPassword(email, newPassword, confirmPassword);
+                return this.userRL.ResetPassword(email, newPassword, confirmPassword);
             }
             catch (Exception)
             {

@@ -1,24 +1,30 @@
-﻿using RepositoryLayer.Context;
-using RepositoryLayer.Entity;
-using RepositoryLayer.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RepositoryLayer.Context;
+using RepositoryLayer.Entity;
+using RepositoryLayer.Interface;
 using System.Text;
 
 namespace RepositoryLayer.Services
 {
     public class CollabRL : ICollabRL
     {
-
+        // Instance variable
         private readonly FundooContext fundooContext;
 
-        //Constructor
+        // Constructor
         public CollabRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
         }
-        //Method to create collab with registered person
+        /// <summary>
+        /// Method to create collab with registered person
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notesId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public Collaborator CreateCollab(long userId, long notesId, string email)
         {
             try
@@ -42,13 +48,17 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //Method to view collab by notes id
-        public IEnumerable<Collaborator> ViewCollabByNotesId(long NotesId)
+        /// <summary>
+        /// Method to view collab by notes id
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
+        public IEnumerable<Collaborator> ViewCollabByNotesId(long notesId)
         {
             try
             {
-                //Getting all details from collab for given collab id
-                var data = fundooContext.CollabTable.Where(y => y.NotesId == NotesId).ToList();
+                // Getting all details from collab for given collab id
+                var data = fundooContext.CollabTable.Where(y => y.NotesId == notesId).ToList();
                 if (data != null)
                 {
                     return data;
@@ -62,12 +72,15 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-        //To View all collaborators in database
+        /// <summary>
+        /// Method to View all collaborators in database
+        /// </summary>
+        /// <returns></returns>
         public List<Collaborator> ViewAllCollaborators()
         {
             try
             {
-                //Getting all details of collaborators present in database
+                // Getting all details of collaborators present in database
                 var collab = fundooContext.CollabTable.ToList();
                 if (collab != null)
                 {
@@ -81,13 +94,18 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-            //Method to Remove collab 
-            public Collaborator RemoveCollab(long userId, long CollabId)
+        /// <summary>
+        /// Method to Remove collab 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="collabId"></param>
+        /// <returns></returns>
+        public Collaborator RemoveCollab(long userId, long collabId)
         {
-            var result = fundooContext.CollabTable.FirstOrDefault(x => x.Id == userId && x.CollabId == CollabId);
+            var result = fundooContext.CollabTable.FirstOrDefault(x => x.Id == userId && x.CollabId == collabId);
             if (result != null)
             {
-                //Removing collab from the database
+                // Removing collab from the database
                 fundooContext.CollabTable.Remove(result);
                 fundooContext.SaveChanges();
                 return result;

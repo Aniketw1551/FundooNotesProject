@@ -1,4 +1,9 @@
-﻿using BusinessLayer.Interface;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using BusinessLayer.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,11 +11,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using RepositoryLayer.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FundooNotes.Controllers
 {
@@ -18,18 +18,19 @@ namespace FundooNotes.Controllers
     [ApiController]
     public class CollabController : ControllerBase
     {
-        //instance variables
+        ////Instance variables
         private readonly IMemoryCache memoryCache;
         private readonly IDistributedCache distributedCache;
         private readonly ICollabBL collabBL;
-        //Constructor of CollabController
+        ////Constructor of CollabController
         public CollabController(ICollabBL collabBL, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
             this.collabBL = collabBL;
             this.memoryCache = memoryCache;
             this.distributedCache = distributedCache;
         }
-        //Create collab api 
+        // Create collab api
+        
         [Authorize]
         [HttpPost("Create")]
         public IActionResult CreateCollab(long notesId, string email)
@@ -48,15 +49,16 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Remove collab api
+        // Remove collab api
+
         [Authorize]
         [HttpDelete("Remove")]
-        public IActionResult RemoveCollab(long CollabId)
+        public IActionResult RemoveCollab(long collabId)
         {
             try
             {
                 long userId = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "Id").Value);
-                var result = collabBL.RemoveCollab(userId, CollabId);
+                var result = collabBL.RemoveCollab(userId, collabId);
                 if (result != null)
                     return this.Ok(new { Success = true, message = "Collab removed successfully", data = result });
                 else
@@ -67,14 +69,15 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get collabs by notes id api
+        // Get collabs by notes id api
+
         [Authorize]
         [HttpGet("{Id}/Get")]
-        public IEnumerable<Collaborator> ViewCollabByNotesId(long NotesId)
+        public IEnumerable<Collaborator> ViewCollabByNotesId(long notesId)
         {
             try
             {
-                var result = collabBL.ViewCollabByNotesId(NotesId);
+                var result = collabBL.ViewCollabByNotesId(notesId);
                 if (result != null)
                     return result;
                 else
@@ -85,7 +88,8 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all Collabs api
+        // Get all Collabs api
+
         [Authorize]
         [HttpGet("ViewAll")]
         public List<Collaborator> ViewAllCollaborators()
@@ -103,7 +107,8 @@ namespace FundooNotes.Controllers
                 throw;
             }
         }
-        //Get all collab by redis api
+        // Get all collab by redis api
+
         [HttpGet("redis")]
         public async Task<IActionResult> GetAllCustomersUsingRedisCache()
         {
