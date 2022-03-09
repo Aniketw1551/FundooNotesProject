@@ -16,15 +16,16 @@ namespace RepositoryLayer.Services
 {
     public class UserRL : IUserRL
     {
+        ////Instance variables
         private readonly FundooContext fundooContext;
         private readonly IConfiguration _Appsettings;
-        // Constructor
+        ////Constructor
         public UserRL(FundooContext fundooContext, IConfiguration _Appsettings)
         {
             this.fundooContext = fundooContext;
             this._Appsettings = _Appsettings;
         }
-        // Constructor of UserRL
+        ////Constructor of UserRL
         public UserRL(FundooContext fundooContext)
         {
             this.fundooContext = fundooContext;
@@ -89,9 +90,9 @@ namespace RepositoryLayer.Services
         /// <summary>
         /// Method for Jwt Token For Login authentication with email and id
         /// </summary>
-        /// <param name="Email"></param>
-        /// <param name="Id"></param>
-        /// <returns></returns>
+        /// <param name="Email">Email</param>
+        /// <param name="Id">Id</param>
+        /// <returns>Token</returns>
         
         private string GenerateSecurityToken(string email, long Id)
         {
@@ -118,6 +119,7 @@ namespace RepositoryLayer.Services
         /// </summary>
         /// <param name="email">Email</param>
         /// <returns>Link</returns>
+        
         public string ForgotPassword(string email)
         {
             try
@@ -150,12 +152,12 @@ namespace RepositoryLayer.Services
         /// <param name="newPassword">NewPassword</param>
         /// <param name="confirmPassword">ConfirmPassword</param>
         /// <returns>Reset</returns>
-        /// 
+        
         public bool ResetPassword(string email, string newPassword, string confirmPassword)
         {
             try
             {
-                // Checking if new password matches with confirm password
+                ////Checking if new password matches with confirm password
                 if (newPassword == confirmPassword)
                 {
                     //// matching in database
