@@ -41,7 +41,19 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-        public Collaborator RemoveCollab(long userId, long CollabId)
+        public List<Collaborator> ViewAllCollaborators()
+        {
+            try
+            {
+                return collabRL.ViewAllCollaborators();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+            public Collaborator RemoveCollab(long userId, long CollabId)
         {
             try
             {
